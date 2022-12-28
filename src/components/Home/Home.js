@@ -3,11 +3,17 @@ import AOS from 'aos';
 import 'aos/dist/aos.css'; 
 import { Button } from 'flowbite-react';
 import { Link } from 'react-router-dom';
+import { Helmet } from 'react-helmet';
 AOS.init();
 
 const Home = () => {
     return (
         <div>
+              <Helmet>
+                <title>
+                  Home
+                </title>
+            </Helmet>
             <div className='text-left text-2xl ml-5 lg:ml-8 lg:text-4xl mt-4 font-medium mb-6 lg:mb-12 '>
           <div data-aos="fade-right"
             data-aos-duration="1500">
@@ -45,12 +51,20 @@ const Home = () => {
             className='text-left text-2xl ml-5 lg:ml-8 lg:text-4xl mt-4 font-medium'>
             So Let's Get Started by adding your <span className='text-purple-600'> First Task </span>!
           </div>
-          <div className='mt-4'>
+          <div className='mt-4'
+          data-aos="fade-right"
+          data-aos-duration="1500"
+          data-aos-delay="3000">
             <Link to='/addtask'>
-    <Button gradientMonochrome="purple"
-    className='text-left ml-5 lg:ml-8'>
-      Add a Task
+            <div>
+    <Button
+      outline={true}
+      gradientDuoTone="purpleToPink"
+      className='text-left ml-5 lg:ml-8'
+    >
+      Add a Task right now
     </Button>
+  </div>
     </Link>
   </div>
         </div>

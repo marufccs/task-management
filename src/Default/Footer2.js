@@ -3,7 +3,7 @@ import React from 'react';
 
 const Footer2 = () => {
     return (
-        <Footer container={true}>
+        <Footer container={true} className='mx-6'>
   <div className="w-full text-center">
     <div className="w-full justify-between sm:flex sm:items-center sm:justify-between">
       <Footer.Brand
