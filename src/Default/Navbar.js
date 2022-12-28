@@ -45,6 +45,11 @@ const Header = () => {
             Completed Tasks
           </Navbar.Link>
           </Link>
+          <Link to='/login'>
+          <Navbar.Link>
+            Log In
+          </Navbar.Link>
+          </Link>
         </Navbar.Collapse>
       </Navbar>
     );

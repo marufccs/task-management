@@ -2,7 +2,6 @@ import React from 'react';
 import { Helmet } from 'react-helmet';
 import AddTaskForm from './AddTaskForm';
 import './AddTask.css';
-import { Button } from 'flowbite-react';
 
 const AddTask = () => {
     return (
