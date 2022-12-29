@@ -1,8 +1,21 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Navbar } from 'flowbite-react';
 import { Link } from 'react-router-dom';
+import { AuthContext } from '../context/UserContext';
 
 const Header = () => {
+
+  const {user, logOut} = useContext(AuthContext);
+
+  const handleLogOut = () => {
+    logOut()
+    .then(() => {
+
+    }).catch((error) => {
+
+    });
+  }
+
     return (
         <Navbar
         fluid={true}
@@ -45,11 +58,25 @@ const Header = () => {
             Completed Tasks
           </Navbar.Link>
           </Link>
-          <Link to='/login'>
-          <Navbar.Link>
-            Log In
-          </Navbar.Link>
-          </Link>
+          {
+user && user.uid? 
+<div>
+<Link>
+ <Navbar.Link onClick={handleLogOut}>
+   Log Out
+ </Navbar.Link>
+ </Link>
+</div>
+ : 
+<div>
+ <Link to='/login'>
+ <Navbar.Link>
+   Log In
+ </Navbar.Link>
+ </Link>
+ </div>
+            }
+    
         </Navbar.Collapse>
       </Navbar>
     );

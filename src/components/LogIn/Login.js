@@ -1,10 +1,46 @@
 import { Button, Checkbox, Label, TextInput } from 'flowbite-react';
-import React from 'react';
+import React, { useContext, useState } from 'react';
+import { useForm } from 'react-hook-form';
 import { Link } from 'react-router-dom';
+import Swal from 'sweetalert2';
+import { AuthContext } from '../../context/UserContext';
 
 const Login = () => {
+
+    const {signInUser} = useContext(AuthContext);
+
+    const [error, setError] = useState('');
+
+    const { register, handleSubmit, watch, formState, reset, formState: { errors } } = useForm();
+
+    const onSubmit = data =>{
+        signInUser(data.email, data.password)
+        .then((userCredential) => {
+            const user = userCredential.user;
+            setError('');
+            Swal.fire(
+                'Great',
+                "You've been logged in successfully!",
+                'success'
+              );
+          })
+          .catch((error) => {
+            const errorCode = error.code;
+            const errorMessage = error.message;
+            console.log(errorCode, errorMessage);
+            setError(errorMessage);
+          });
+    }
+
+    React.useEffect(() => {
+        if (formState.isSubmitSuccessful) {
+          reset({ email: '', password: ''});
+        }
+      }, [formState, reset]);
+    
+
     return (
-        <form className="flex flex-col gap-4 task-form mt-6">
+        <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4 task-form mt-6">
   <div>
     <div className="mb-2 block">
       <Label
@@ -15,9 +51,11 @@ const Login = () => {
     <TextInput
       id="email1"
       type="email"
-      placeholder="name@flowbite.com"
-      required={true}
+      placeholder="Your email here"
+      {...register("email", { required: true })} 
     />
+      {errors.email?.type === 'required' && <p 
+                      className='text-red-700' role="alert">Your email is required</p>}
   </div>
   <div>
     <div className="mb-2 block">
@@ -29,8 +67,13 @@ const Login = () => {
     <TextInput
       id="password1"
       type="password"
-      required={true}
+      {...register("password", { required: true, minLength: 8  })} 
     />
+     {errors.password?.type === 'required' && <p 
+                      className='text-red-700' role="alert">Your password is required</p>}
+                      {
+                        error && <p className='text-red-700'>{error}</p>
+                      }
   </div>
   <div className="flex items-center gap-2">
     <Label htmlFor="remember">
