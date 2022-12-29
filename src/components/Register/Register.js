@@ -1,15 +1,23 @@
 import { Button, Label, TextInput } from 'flowbite-react';
 import React, { useContext } from 'react';
 import { useForm } from 'react-hook-form';
-import { Link, UNSAFE_DataStaticRouterContext } from 'react-router-dom';
+import { Link, useLocation, useNavigate} from 'react-router-dom';
 import Swal from 'sweetalert2';
 import { AuthContext } from '../../context/UserContext';
+import { FaGoogle } from "react-icons/fa";
 
 const Register = () => {
 
-    const {signInNewUser, updateUser} = useContext(AuthContext);
+    const {signInNewUser, updateUser, signInWithGoogle} = useContext(AuthContext);
 
     const { register, handleSubmit, watch, formState, reset, formState: { errors } } = useForm();
+
+    const navigate = useNavigate();
+    const location = useLocation();
+  
+    const from = location.state?.from?.pathname || '/';
+
+
   const onSubmit = data =>{
     signInNewUser(data.email, data.password)
     .then((userCredential) => {
@@ -27,6 +35,7 @@ const Register = () => {
             "You've been registered successfully!",
             'success'
           );
+          navigate(from, { replace: true });
       })
       .catch((error) => {
         const errorCode = error.code;
@@ -40,6 +49,24 @@ const Register = () => {
       reset({ name: '' , email: '', password: ''});
     }
   }, [formState, reset]);
+
+  
+  const handleGoogleSignIn = () => {
+    signInWithGoogle()
+    .then((result) => {
+      const user = result.user;
+      Swal.fire(
+        'Congrats!',
+        "You've been signed in successfully with Google!",
+        'success'
+      )
+      
+        navigate(from, { replace: true });
+        
+    }).catch((error) => {
+      const errorMessage = error.message;
+    });
+  }
 
     return (
         <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4 task-form mt-6">
@@ -103,6 +130,12 @@ const Register = () => {
         >
           Submit
         </Button>
+        <Button  onClick={handleGoogleSignIn} 
+  gradientDuoTone="purpleToPink"
+  >
+    <FaGoogle  className='mr-3'></FaGoogle>
+  Register with Google instead
+  </Button>
       </form>
     );
 };

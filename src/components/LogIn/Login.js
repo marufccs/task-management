@@ -1,15 +1,20 @@
 import { Button, Checkbox, Label, TextInput } from 'flowbite-react';
 import React, { useContext, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { Link } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import { AuthContext } from '../../context/UserContext';
+import { FaGoogle } from "react-icons/fa";
 
 const Login = () => {
 
-    const {signInUser} = useContext(AuthContext);
+    const {signInUser, signInWithGoogle} = useContext(AuthContext);
 
     const [error, setError] = useState('');
+    const navigate = useNavigate();
+    const location = useLocation();
+  
+    const from = location.state?.from?.pathname || '/';
 
     const { register, handleSubmit, watch, formState, reset, formState: { errors } } = useForm();
 
@@ -23,6 +28,7 @@ const Login = () => {
                 "You've been logged in successfully!",
                 'success'
               );
+              navigate(from, { replace: true });
           })
           .catch((error) => {
             const errorCode = error.code;
@@ -38,6 +44,22 @@ const Login = () => {
         }
       }, [formState, reset]);
     
+      const handleGoogleSignIn = () => {
+        signInWithGoogle()
+        .then((result) => {
+          const user = result.user;
+          Swal.fire(
+            'Congrats!',
+            "You've been signed in successfully with Google!",
+            'success'
+          )
+          
+            navigate(from, { replace: true });
+            
+        }).catch((error) => {
+          const errorMessage = error.message;
+        });
+      }
 
     return (
         <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4 task-form mt-6">
@@ -85,6 +107,13 @@ const Login = () => {
   gradientDuoTone="purpleToPink"
   >
     Submit
+  </Button>
+  <Button  
+  gradientDuoTone="purpleToPink"
+  onClick={handleGoogleSignIn} 
+  >
+    <FaGoogle className='mr-3'></FaGoogle>
+  Sign In with Google instead
   </Button>
 </form>
     );
