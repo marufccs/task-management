@@ -1,11 +1,15 @@
 import { Alert, Button, FileInput, TextInput } from 'flowbite-react';
-import React from 'react';
+import React, { useContext } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Swal from 'sweetalert2';
+import { AuthContext } from '../../context/UserContext';
 
 const AddTaskForm = () => {
+
+  const {user} = useContext(AuthContext);
+
     const { register, handleSubmit, watch, formState: { errors } } =        
      useForm();
 
@@ -26,8 +30,9 @@ const AddTaskForm = () => {
             console.log(imgData.data.url);
             const task = {
                 name: data.task,
-                image: imgData.data.url,
-                description: data.description
+                image: imgData?.data.url,
+                description: data.description,
+                email : user.email
             }
             console.log(task);
             fetch('http://localhost:5000/mytasks', {
