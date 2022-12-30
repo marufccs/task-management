@@ -14,7 +14,7 @@ const MyTask = ({mytask}) => {
     const { data: mytasks = [], isLoading, refetch} = useQuery({
       queryKey: ['mytasks'],
       queryFn: async () => {
-          const res = await fetch(`http://localhost:5000/mytasks?email=${user.email}`);
+          const res = await fetch(`https://task-management-server-psi.vercel.app/mytasks?email=${user.email}`);
           const data = await res.json();
           console.log(data);
           return data
@@ -26,6 +26,7 @@ const MyTask = ({mytask}) => {
     return <Loader/>
   }
 
+  //To delete the task
   const handleDelete = _id => {
     console.log(mytask._id);
     Swal.fire({
@@ -38,7 +39,7 @@ const MyTask = ({mytask}) => {
       confirmButtonText: 'Yes, delete it!'
     }).then((result) => {
       if (result.isConfirmed) {
-        fetch(`http://localhost:5000/mytasks/${mytask._id}`, {
+        fetch(`https://task-management-server-psi.vercel.app/mytasks/${mytask._id}`, {
           method: 'DELETE'
         })
         .then(res => res.json())
@@ -58,6 +59,24 @@ const MyTask = ({mytask}) => {
       }
     })
    
+  }
+
+  const handleCompleteTask = _id => {
+    fetch('https://task-management-server-psi.vercel.app/completedtasks', {
+      method: 'POST',
+      headers: {
+        'content-type' : 'application/json'
+      },
+      body: JSON.stringify(name, image, description)
+    })
+    .then(res => res.json())
+    .then(data => {
+      Swal.fire(
+        'Great!',
+        'The task has been completed successfully!',
+        'success'
+      )
+    })
   }
 
     return (
@@ -84,7 +103,7 @@ const MyTask = ({mytask}) => {
       Delete
     </Button>
         </div>
-        <Button
+        <Button onClick={handleCompleteTask}
       outline={true}
       gradientDuoTone="purpleToPink"
       className='ml-20 lg:ml-24'
