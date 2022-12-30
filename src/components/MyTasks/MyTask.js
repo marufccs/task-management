@@ -1,12 +1,69 @@
-import { Button } from 'flowbite-react';
-import React from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { Button} from 'flowbite-react';
+import React, { useContext, useState } from 'react';
+import Swal from 'sweetalert2';
+import { AuthContext } from '../../context/UserContext';
+import Loader from '../../Default/Loader/Loader';
 import './MyTask.css';
+import MyTaskModal from './MyTaskModal';
 
 const MyTask = ({mytask}) => {
     const {name, image, description} = mytask;
+    const {user} = useContext(AuthContext);
+
+    const { data: mytasks = [], isLoading, refetch} = useQuery({
+      queryKey: ['mytasks'],
+      queryFn: async () => {
+          const res = await fetch(`http://localhost:5000/mytasks?email=${user.email}`);
+          const data = await res.json();
+          console.log(data);
+          return data
+      }
+  })
+
+  const [displayTasks, setDisplayTasks] = useState(mytasks);
+  if(isLoading){
+    return <Loader/>
+  }
+
+  const handleDelete = _id => {
+    console.log(mytask._id);
+    Swal.fire({
+      title: `Are you sure you want to delete ${name}?`,
+      text: "You won't be able to undo this!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, delete it!'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        fetch(`http://localhost:5000/mytasks/${mytask._id}`, {
+          method: 'DELETE'
+        })
+        .then(res => res.json())
+        .then(data => {
+          if(data.deletedCount > 0){
+            Swal.fire(
+              'Great!',
+              'The task has been deleted successfully!',
+              'success'
+            )
+           
+            const remainingTasks = displayTasks.filter(task => task._id !== mytask._id)
+              setDisplayTasks(remainingTasks);
+              refetch();
+          }
+        })
+      }
+    })
+   
+  }
+
     return (
        
 <div className="max-w-sm bg-white border border-gray-200 rounded-lg shadow-md dark:bg-gray-800 dark:border-gray-700">
+
         <img className="rounded-t-lg h-60 w-full" src={image} alt="" />
     <div className="p-5">
         <a href="#">
@@ -14,13 +71,14 @@ const MyTask = ({mytask}) => {
         </a>
         <p className="text-left mb-3 font-normal text-gray-700 dark:text-gray-400">Task Description: {description}</p>
         <div className='flex justify-between mb-3'>
-        <Button
-      className='text-left text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-2 text-center mr-2 mb-2 '
+        <Button data-modal-toggle="authentication-modal" type="button"
+      className='text-left text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-2 text-center mr-2 mb-2 '  
     >
       Update 
     </Button>
-    <Button
-      
+    <MyTaskModal/>
+
+    <Button  onClick={handleDelete}
       className='text-left  text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm px-2  text-center mr-2 mb-2'
     >
       Delete
@@ -34,6 +92,7 @@ const MyTask = ({mytask}) => {
       Mark as Completed
     </Button>
     </div>
+
 </div>
 
     );
