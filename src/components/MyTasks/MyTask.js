@@ -11,12 +11,13 @@ const MyTask = ({mytask}) => {
     const {name, image, description} = mytask;
     const {user} = useContext(AuthContext);
 
+    const email = user.email;
+
     const { data: mytasks = [], isLoading, refetch} = useQuery({
       queryKey: ['mytasks'],
       queryFn: async () => {
-          const res = await fetch(`https://task-management-server-psi.vercel.app/mytasks?email=${user.email}`);
+          const res = await fetch(`http://localhost:5000/mytasks?email=${user.email}`);
           const data = await res.json();
-          console.log(data);
           return data
       }
   })
@@ -28,7 +29,6 @@ const MyTask = ({mytask}) => {
 
   //To delete the task
   const handleDelete = _id => {
-    console.log(mytask._id);
     Swal.fire({
       title: `Are you sure you want to delete ${name}?`,
       text: "You won't be able to undo this!",
@@ -39,7 +39,7 @@ const MyTask = ({mytask}) => {
       confirmButtonText: 'Yes, delete it!'
     }).then((result) => {
       if (result.isConfirmed) {
-        fetch(`https://task-management-server-psi.vercel.app/mytasks/${mytask._id}`, {
+        fetch(`http://localhost:5000/mytasks/${mytask._id}`, {
           method: 'DELETE'
         })
         .then(res => res.json())
@@ -61,22 +61,38 @@ const MyTask = ({mytask}) => {
    
   }
 
+  // To complete the task
   const handleCompleteTask = _id => {
-    fetch('https://task-management-server-psi.vercel.app/completedtasks', {
-      method: 'POST',
+    fetch(`http://localhost:5000/completedtasks`, {
+      method: "POST",
       headers: {
-        'content-type' : 'application/json'
+        "content-type" : "application/json"
       },
-      body: JSON.stringify(name, image, description)
+      body: JSON.stringify({name, image, description, email})
     })
     .then(res => res.json())
     .then(data => {
+      console.log(data);
       Swal.fire(
         'Great!',
         'The task has been completed successfully!',
         'success'
       )
+      if(data.acknowledged === true){
+        fetch(`http://localhost:5000/mytasks/${mytask._id}`, {
+          method: 'DELETE'
+        })
+        .then(res => res.json())
+        .then(data => {
+          if(data.deletedCount > 0){          
+            const remainingTasks = displayTasks.filter(task => task._id !== mytask._id)
+              setDisplayTasks(remainingTasks);
+              refetch();
+          }
+        })
+      }
     })
+    .catch(err => console.error(err))
   }
 
     return (

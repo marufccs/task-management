@@ -35,7 +35,7 @@ const AddTaskForm = () => {
                 email : user.email
             }
             console.log(task);
-            fetch('https://task-management-server-psi.vercel.app/mytasks', {
+            fetch('http://localhost:5000/mytasks', {
                 method: 'POST',
                 headers: {
                     'content-type' : 'application/json',

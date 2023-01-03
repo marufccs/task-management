@@ -12,7 +12,7 @@ const MyTasks = () => {
     const { data: mytasks = [], isLoading} = useQuery({
         queryKey: ['mytasks'],
         queryFn: async () => {
-            const res = await fetch(`https://task-management-server-psi.vercel.app/mytasks?email=${user.email}`);
+            const res = await fetch(`http://localhost:5000/mytasks?email=${user.email}`);
             const data = await res.json();
             return data
         }
@@ -21,8 +21,6 @@ const MyTasks = () => {
     if(isLoading){
         return <Loader/>
     }
-
-    console.log(mytasks);
 
     return (
         <div>
