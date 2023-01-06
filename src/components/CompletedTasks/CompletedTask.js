@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { Button } from 'flowbite-react';
 import React, { useContext, useState } from 'react';
+import { Navigate, useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import { AuthContext } from '../../context/UserContext';
 
@@ -9,6 +10,7 @@ const CompletedTask = ({completedtask}) => {
     const {name, image, description} = completedtask;
 
     const {user} = useContext(AuthContext);
+    const navigate = useNavigate();
     const email = user.email;
 
     const { data: completedtasks = [], isLoading, refetch} = useQuery({
@@ -81,6 +83,7 @@ const CompletedTask = ({completedtask}) => {
               refetch();
           }
         })
+        navigate('/mytasks')
             }
             })
 

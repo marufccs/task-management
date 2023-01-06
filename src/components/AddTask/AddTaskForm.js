@@ -1,6 +1,7 @@
 import { Alert, Button, FileInput, TextInput } from 'flowbite-react';
 import React, { useContext } from 'react';
 import { useForm } from 'react-hook-form';
+import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Swal from 'sweetalert2';
@@ -9,6 +10,7 @@ import { AuthContext } from '../../context/UserContext';
 const AddTaskForm = () => {
 
   const {user} = useContext(AuthContext);
+  const navigate = useNavigate();
 
     const { register, handleSubmit, watch, formState: { errors } } =        
      useForm();
@@ -34,7 +36,6 @@ const AddTaskForm = () => {
                 description: data.description,
                 email : user.email
             }
-            console.log(task);
             fetch('http://localhost:5000/mytasks', {
                 method: 'POST',
                 headers: {
@@ -52,6 +53,7 @@ const AddTaskForm = () => {
                         "You've added your task successfully!",
                         'success'
                       )
+                      navigate('/mytasks')
                 }
             })
         }
