@@ -5,6 +5,7 @@ import { Link, useLocation, useNavigate} from 'react-router-dom';
 import Swal from 'sweetalert2';
 import { AuthContext } from '../../context/UserContext';
 import { FaGoogle } from "react-icons/fa";
+import { Helmet } from 'react-helmet';
 
 const Register = () => {
 
@@ -69,7 +70,13 @@ const Register = () => {
   }
 
     return (
-        <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4 task-form mt-6">
+      <div>
+        <Helmet>
+          <title>
+            Register
+          </title>
+        </Helmet>
+          <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4 task-form mt-6">
         <div>
           <div className="mb-2 block">
             <Label
@@ -137,6 +144,7 @@ const Register = () => {
   Register with Google instead
   </Button>
       </form>
+      </div>
     );
 };
 

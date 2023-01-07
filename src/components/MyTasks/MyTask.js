@@ -109,13 +109,11 @@ const MyTask = ({mytask}) => {
         </a>
         <p className="text-left mb-3 font-normal text-gray-700 dark:text-gray-400">Task Description: {description}</p>
         <div className='flex justify-between mb-3'>
-        <Button data-modal-toggle="authentication-modal" type="button"
+        <Button type="button"
       className='text-left text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-2 text-center mr-2 mb-2 '  
     >
       Update 
     </Button>
-    <MyTaskModal/>
-
     <Button  onClick={handleDelete}
       className='text-left  text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm px-2  text-center mr-2 mb-2'
     >
@@ -130,7 +128,6 @@ const MyTask = ({mytask}) => {
       Mark as Completed
     </Button>
     </div>
-
 </div>
 
     );
