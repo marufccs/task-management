@@ -12,7 +12,7 @@ const CompletedTasks = () => {
     const { data: completedtasks = [], isLoading} = useQuery({
         queryKey: ['completedtasks'],
         queryFn: async () => {
-            const res = await fetch(`http://localhost:5000/completedtasks?email=${user.email}`);
+            const res = await fetch(`https://task-management-server-psi.vercel.app/completedtasks?email=${user.email}`);
             const data = await res.json();
             return data
         }

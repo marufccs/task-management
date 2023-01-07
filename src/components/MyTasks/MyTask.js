@@ -18,7 +18,7 @@ const MyTask = ({mytask}) => {
     const { data: mytasks = [], isLoading, refetch} = useQuery({
       queryKey: ['mytasks'],
       queryFn: async () => {
-          const res = await fetch(`http://localhost:5000/mytasks?email=${user.email}`);
+          const res = await fetch(`https://task-management-server-psi.vercel.app/mytasks?email=${user.email}`);
           const data = await res.json();
           return data
       }
@@ -41,7 +41,7 @@ const MyTask = ({mytask}) => {
       confirmButtonText: 'Yes, delete it!'
     }).then((result) => {
       if (result.isConfirmed) {
-        fetch(`http://localhost:5000/mytasks/${mytask._id}`, {
+        fetch(`https://task-management-server-psi.vercel.app/mytasks/${mytask._id}`, {
           method: 'DELETE'
         })
         .then(res => res.json())
@@ -65,7 +65,7 @@ const MyTask = ({mytask}) => {
 
   // To complete the task
   const handleCompleteTask = _id => {
-    fetch(`http://localhost:5000/completedtasks`, {
+    fetch(`https://task-management-server-psi.vercel.app/completedtasks`, {
       method: "POST",
       headers: {
         "content-type" : "application/json"
@@ -81,7 +81,7 @@ const MyTask = ({mytask}) => {
         'success'
       )
       if(data.acknowledged === true){
-        fetch(`http://localhost:5000/mytasks/${mytask._id}`, {
+        fetch(`https://task-management-server-psi.vercel.app/mytasks/${mytask._id}`, {
           method: 'DELETE'
         })
         .then(res => res.json())
